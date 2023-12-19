@@ -1,0 +1,23 @@
+name: Rekor log monitor
+on:
+  schedule:
+    - cron: '0 * * * *' # every hour
+
+permissions: read-all
+
+jobs:
+  run_consistency_proof:
+    permissions:
+      contents: read
+      issues: write
+      id-token: write
+    uses: sigstore/rekor-monitor/.github/workflows/reusable_monitoring.yml@main
+    with:
+      file_issue: true
+      identities: |
+        certIdentities:
+          - certSubject: colleenmurphy@google.com
+          - certSubject: colleen@gazlene.net
+        subjects:
+          - colleenmurphy@google.com
+          - colleen@gazlene.net
