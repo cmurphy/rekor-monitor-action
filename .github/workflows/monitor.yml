@@ -1,4 +1,4 @@
-name: Rekor log monitor
+name: Rekor log and identity monitor
 on:
   schedule:
     - cron: '0 * * * *' # every hour
@@ -8,16 +8,14 @@ permissions: read-all
 jobs:
   run_consistency_proof:
     permissions:
-      contents: read
-      issues: write
-      id-token: write
+      contents: read # Needed to checkout repositories
+      issues: write # Needed if you set "file_issue: true"
     uses: sigstore/rekor-monitor/.github/workflows/reusable_monitoring.yml@main
     with:
-      file_issue: true
-      identities: |
-        certIdentities:
-          - certSubject: colleenmurphy@google.com
-          - certSubject: colleen@gazlene.net
-        subjects:
-          - colleenmurphy@google.com
-          - colleen@gazlene.net
+      file_issue: true # Strongly recommended: Files an issue on monitoring failure
+      artifact_retention_days: 14 # Optional, default is 14: Must be longer than the cron job frequency
+      config: |
+        monitoredValues:
+          certIdentities:
+            - certSubject: colleenmurphy@google\.com
+            - certSubject: colleen@gazlene\.net
